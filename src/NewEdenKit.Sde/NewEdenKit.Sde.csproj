@@ -12,6 +12,7 @@
     <PackageTags>eve-online;eve;sde;static-data;ccp;new-eden</PackageTags>
     <PackageIcon>icon.png</PackageIcon>
     <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageProjectUrl>https://github.com/NewEdenKit/NewEdenKit.SDE</PackageProjectUrl>
     <RepositoryUrl>https://github.com/NewEdenKit/NewEdenKit.SDE.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
@@ -20,6 +21,7 @@
   <ItemGroup>
     <None Include="..\..\assets\icon.png" Pack="true" PackagePath="\" Visible="false" />
     <None Include="..\..\README.md" Pack="true" PackagePath="\" Visible="false" />
+    <None Include="..\..\LICENSE" Pack="true" PackagePath="\" Visible="false" />
   </ItemGroup>
 
   <ItemGroup>

@@ -170,4 +170,8 @@ dotnet test
 dotnet pack src/NewEdenKit.Sde -c Release
 ```
 
+## License
+
+GNU General Public License v3.0. See [LICENSE](LICENSE).
+
 EVE Online and the EVE logo are trademarks of CCP hf. This project is not affiliated with CCP.
