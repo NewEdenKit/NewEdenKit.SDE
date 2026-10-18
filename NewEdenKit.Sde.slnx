@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/NewEdenKit.Sde/NewEdenKit.Sde.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/NewEdenKit.Sde.Tests/NewEdenKit.Sde.Tests.csproj" />
+  </Folder>
+</Solution>
