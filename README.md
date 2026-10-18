@@ -14,40 +14,64 @@ you control, such as a database or a cache, through one small interface.
 
 ## Quick start
 
+<!-- snippet: quickstart -->
 ```csharp
-using NewEdenKit.Sde;
-
-using var client = new SdeClient();
+using var client = new SdeClient(new SdeClientOptions { UserAgent = "MyApp/1.0 (admin@example.com)" });
 var loader = new SdeLoader(client);
+var store = new SdeFileStore("sde-cache");
 
-// Downloads the latest build into the local cache (if needed) and opens it.
-var sde = await loader.OpenAsync();
+// Downloads the SDE only when there is a new build, and caches just these datasets.
+await loader.LoadAsync(store, new SdeLoadOptions
+{
+    Datasets = [SdeDatasets.Types, SdeDatasets.Groups],
+});
 
-await foreach (var type in sde.ReadAsync(SdeDatasets.Types))
-    Console.WriteLine($"{type.Id}: {type.Name.En}");
-
-var systems = await sde.ReadDictionaryAsync(SdeDatasets.SolarSystems);
-Console.WriteLine(systems[30000142].Name.En); // Jita
+Dictionary<int, ItemType> types = await store.ReadDictionaryAsync(SdeDatasets.Types);
+Console.WriteLine(types[34].Name.En); // Tritanium
 ```
+
+**Read next:** the [usage guide](docs/usage.md) covers choosing an approach, the file store, keeping data current,
+custom stores, models, common lookups (dogma, blueprints, map), untyped datasets, testing, and common mistakes.
+Every example in it is compiled by the tests.
+
+**For AI coding assistants:** start from [`llms.txt`](llms.txt) and the [usage guide](docs/usage.md).
 
 ## Caching models as local files
 
 `SdeFileStore` is a ready-made store that keeps each dataset you ask for in its own file. Pick the models
 you use, let the loader keep them current, and load them into memory when you need them:
 
+<!-- snippet: file-store -->
 ```csharp
-var store = new SdeFileStore("sde-cache");
+var store = new SdeFileStore(directory);
 
-// Downloads and caches only these datasets, and only when there is a new build
-// or a dataset was added to the list.
-await loader.LoadAsync(store, new SdeLoadOptions
+SdeLoadResult result = await loader.LoadAsync(store, new SdeLoadOptions
 {
-    Datasets = [SdeDatasets.Types, SdeDatasets.Groups, SdeDatasets.SolarSystems],
-});
+    Datasets = [SdeDatasets.Types, SdeDatasets.Groups, SdeDatasets.Categories, SdeDatasets.SolarSystems],
+}, ct);
 
-// The store is also a reader.
-Dictionary<int, ItemType> types = await store.ReadDictionaryAsync(SdeDatasets.Types);
-Dictionary<int, SolarSystem> systems = await store.ReadDictionaryAsync(SdeDatasets.SolarSystems);
+if (result.UpToDate)
+    Console.WriteLine($"Already on build {result.Build.BuildNumber}");
+else
+    Console.WriteLine($"Imported {string.Join(", ", result.ImportedDatasets.Keys)} from build {result.Build.BuildNumber}");
+```
+
+<!-- snippet: in-memory -->
+```csharp
+/// <summary>The SDE data an application keeps in memory, loaded once from the file store.</summary>
+public sealed record SdeData(
+    IReadOnlyDictionary<int, ItemType> Types,
+    IReadOnlyDictionary<int, ItemGroup> Groups,
+    IReadOnlyDictionary<int, ItemCategory> Categories)
+{
+    public static async Task<SdeData> LoadAsync(SdeFileStore store, CancellationToken ct) => new(
+        await store.ReadDictionaryAsync(SdeDatasets.Types, ct),
+        await store.ReadDictionaryAsync(SdeDatasets.Groups, ct),
+        await store.ReadDictionaryAsync(SdeDatasets.Categories, ct));
+
+    public string CategoryOf(int typeId) =>
+        Categories[Groups[Types[typeId].GroupId].CategoryId].Name.En!;
+}
 ```
 
 Files are written in the shape of the model they were imported as, so a custom model

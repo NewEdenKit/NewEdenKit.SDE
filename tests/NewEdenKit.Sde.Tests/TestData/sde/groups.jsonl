@@ -1,1 +1,2 @@
 {"_key": 465, "anchorable": false, "anchored": true, "categoryID": 25, "fittableNonSingleton": false, "iconID": 15, "name": {"de": "Eis", "en": "Ice", "es": "Hielo", "fr": "Glace", "ja": "アイス", "ko": "얼음", "ru": "Лед", "zh": "冰矿"}, "published": true, "useBasePrice": false}
+{"_key": 18, "anchorable": false, "anchored": false, "categoryID": 4, "fittableNonSingleton": false, "iconID": 22, "name": {"de": "Mineralien", "en": "Mineral", "es": "Mineral", "fr": "Minéral", "ja": "無機物", "ko": "광물", "ru": "Минералы", "zh": "矿物"}, "published": true, "useBasePrice": true}

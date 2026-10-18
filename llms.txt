@@ -1,0 +1,48 @@
+# NewEdenKit.Sde
+
+> .NET library for EVE Online's Static Data Export (SDE, https://developers.eveonline.com/static-data): downloads
+> and caches SDE builds, streams their records as typed models, and loads them into storage you control. Built-in
+> SdeFileStore keeps one file per dataset for loading into memory; implement ISdeStore for a database or cache.
+> Skips unchanged builds and re-imports only changed datasets. .NET 8/10, no dependencies.
+
+Quick start (`dotnet add package NewEdenKit.Sde`):
+
+<!-- snippet: quickstart -->
+```csharp
+using var client = new SdeClient(new SdeClientOptions { UserAgent = "MyApp/1.0 (admin@example.com)" });
+var loader = new SdeLoader(client);
+var store = new SdeFileStore("sde-cache");
+
+// Downloads the SDE only when there is a new build, and caches just these datasets.
+await loader.LoadAsync(store, new SdeLoadOptions
+{
+    Datasets = [SdeDatasets.Types, SdeDatasets.Groups],
+});
+
+Dictionary<int, ItemType> types = await store.ReadDictionaryAsync(SdeDatasets.Types);
+Console.WriteLine(types[34].Name.En); // Tritanium
+```
+
+Key facts:
+- Types are in `NewEdenKit.Sde` (SdeClient, SdeLoader, SdeFileStore, SdeReader, SdeDatasets, LocalizedString) and
+  `NewEdenKit.Sde.Models` (ItemType, ItemGroup, SolarSystem, Blueprint, ...).
+- Pick datasets with `SdeLoadOptions.Datasets`: `SdeDatasets.Types`, `.Groups`, `.SolarSystems`, ... (30 typed),
+  presets `SdeDatasets.Items` and `SdeDatasets.All`, `SdeDatasets.Raw("skins")` for untyped ones (JsonElement).
+- `Id` is the record key (type ID, system ID, ...), `int`. Text is `LocalizedString` (`Name.En`, `Name.Get("de")`).
+  Optional fields are nullable; lists are never null.
+- Call `LoadAsync` at startup and on a schedule, not per request; it does nothing when the store is current.
+- Custom storage: implement `ISdeStore` (build number + import session). Each `ImportAsync<T>` call carries a complete
+  dataset; pattern-match `records is IAsyncEnumerable<ItemType>`; commit in `CommitAsync`.
+- The SDE has no live data (market prices, assets): use ESI (NewEdenKit.ESI) for that.
+
+## Docs
+
+- [Usage guide](https://raw.githubusercontent.com/NewEdenKit/NewEdenKit.SDE/main/docs/usage.md): choosing an approach,
+  the client and cache, reading builds, the file store, keeping current, custom stores, models, common lookups (dogma,
+  blueprints, map), untyped datasets, testing, and common mistakes. Every example in it is compiled by the tests.
+- [README](https://raw.githubusercontent.com/NewEdenKit/NewEdenKit.SDE/main/README.md): overview.
+
+## Optional
+
+- [CCP's SDE page](https://developers.eveonline.com/static-data): formats, endpoints and change lists.
+- [NewEdenKit.ESI](https://github.com/NewEdenKit/NewEdenKit.ESI/blob/main/llms.txt): the ESI client, for live data.
