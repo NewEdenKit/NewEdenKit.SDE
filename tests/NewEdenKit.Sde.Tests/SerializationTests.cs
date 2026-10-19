@@ -37,11 +37,14 @@ public sealed class SerializationTests
         Assert.Equal(value, JsonSerializer.Deserialize<LocalizedString>(json, SdeJson.Options));
     }
 
+    // The converter targets IReadOnlyDictionary, which is the type the models use.
+#pragma warning disable CA1859
     private sealed record WithMap
     {
         [JsonConverter(typeof(KeyedValueListConverter<double>))]
         public IReadOnlyDictionary<int, double> Map { get; init; } = new Dictionary<int, double>();
     }
+#pragma warning restore CA1859
 
     [Theory]
     [InlineData("""{"map": [{"_key": 1, "_value": 0.5}, {"_key": 7, "_value": 2}]}""")]

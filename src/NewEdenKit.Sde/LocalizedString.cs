@@ -9,6 +9,7 @@ namespace NewEdenKit.Sde;
 /// A piece of text in several languages, keyed by language code (<c>en</c>, <c>de</c>, <c>fr</c>, ...).
 /// </summary>
 [JsonConverter(typeof(LocalizedStringConverter))]
+[SuppressMessage("Naming", "CA1710", Justification = "A localized string that happens to be enumerable by language, not a collection type.")]
 public sealed class LocalizedString : IReadOnlyDictionary<string, string>, IEquatable<LocalizedString>
 {
     /// <summary>The language the SDE always provides and that lookups fall back to.</summary>

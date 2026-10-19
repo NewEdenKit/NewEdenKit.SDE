@@ -74,8 +74,14 @@ public sealed class SdeClient : ISdeClient, IDisposable
         _options = options ?? new SdeClientOptions();
     }
 
+    /// <summary>Creates a client with default options and its own <see cref="HttpClient"/>.</summary>
+    public SdeClient()
+        : this(new SdeClientOptions())
+    {
+    }
+
     /// <summary>Creates a client with its own <see cref="HttpClient"/>.</summary>
-    public SdeClient(SdeClientOptions? options = null)
+    public SdeClient(SdeClientOptions options)
         : this(new HttpClient(new HttpClientHandler { AutomaticDecompression = DecompressionMethods.All }), options)
     {
         _ownsHttpClient = true;

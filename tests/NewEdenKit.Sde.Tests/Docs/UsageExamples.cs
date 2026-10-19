@@ -265,18 +265,18 @@ internal static class UsageExamples
         return neighbours;
     }
 
-    public static async Task<List<string>> Raw(ISdeReader sde, CancellationToken ct)
+    public static async Task<List<int>> Raw(ISdeReader sde, CancellationToken ct)
     {
-        var keys = new List<string>();
+        var ids = new List<int>();
         #region snippet: raw
         // Any dataset without a typed model, as JsonElement. sde.GetDatasetNames() lists them all.
         await foreach (JsonElement skin in sde.ReadRawAsync("skins", ct))
         {
             int id = skin.GetProperty("_key").GetInt32();
-            keys.Add(id.ToString());
+            ids.Add(id);
         }
         #endregion
-        return keys;
+        return ids;
     }
 
     #region snippet: custom-model

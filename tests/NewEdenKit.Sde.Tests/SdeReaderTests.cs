@@ -10,7 +10,7 @@ public sealed class SdeReaderTests : IDisposable
 
     public void Dispose() => _temp.Dispose();
 
-    public static TheoryData<string> Sources => ["archive", "directory"];
+    public static TheoryData<string> Sources => new() { "archive", "directory" };
 
     private SdeReader Open(string source) => source == "archive"
         ? SdeReader.FromArchive(TestSde.CreateArchive(_temp.Path))

@@ -1,3 +1,5 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace NewEdenKit.Sde.Models;
 
 /// <summary>The dogma attributes and effects of a type (<c>typeDogma.jsonl</c>). <see cref="SdeEntity.Id"/> is the type ID.</summary>
@@ -11,6 +13,7 @@ public sealed record TypeDogma : SdeEntity
 }
 
 /// <summary>An attribute value on a type.</summary>
+[SuppressMessage("Naming", "CA1711", Justification = "Dogma attribute is the EVE term; this is not a .NET attribute.")]
 public sealed record TypeDogmaAttribute : SdeRecord
 {
     /// <summary>The attribute, see <see cref="DogmaAttribute"/>.</summary>
@@ -31,6 +34,7 @@ public sealed record TypeDogmaEffect : SdeRecord
 }
 
 /// <summary>A dogma attribute definition (<c>dogmaAttributes.jsonl</c>). <see cref="SdeEntity.Id"/> is the attribute ID.</summary>
+[SuppressMessage("Naming", "CA1711", Justification = "Dogma attribute is the EVE term; this is not a .NET attribute.")]
 public sealed record DogmaAttribute : SdeEntity
 {
     /// <summary>Internal name of the attribute.</summary>
@@ -121,6 +125,7 @@ public sealed record DogmaEffect : SdeEntity
     public LocalizedString? Description { get; init; }
 
     /// <summary>Effect GUID.</summary>
+    [SuppressMessage("Naming", "CA1720", Justification = "Matches the SDE field name.")]
     public string? Guid { get; init; }
 
     /// <summary>The effect category.</summary>

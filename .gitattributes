@@ -1,3 +1,9 @@
-* text=auto
-*.jsonl text eol=lf
-*.png binary
+* text=auto eol=lf
+*.cs     text diff=csharp
+*.slnx   text
+*.csproj text
+*.props  text
+*.md     text
+*.json   text
+*.png    binary
+*.jsonl  text

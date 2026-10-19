@@ -370,7 +370,7 @@ them as `JsonElement`:
 await foreach (JsonElement skin in sde.ReadRawAsync("skins", ct))
 {
     int id = skin.GetProperty("_key").GetInt32();
-    keys.Add(id.ToString());
+    ids.Add(id);
 }
 ```
 
